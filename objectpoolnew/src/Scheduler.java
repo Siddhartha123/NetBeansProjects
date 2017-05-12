@@ -1,3 +1,7 @@
+
+import java.util.LinkedList;
+import java.util.Queue;
+
 /*
 
 * Scheduler.java
@@ -7,8 +11,8 @@
 public class Scheduler extends Thread
 
 {
+Queue<Thread> queue;
 
-private CircularList queue;
 
 private int timeSlice;
 
@@ -18,7 +22,7 @@ public Scheduler() {
 
 timeSlice = DEFAULT_TIME_SLICE;
 
-queue = new CircularList();
+queue = new LinkedList<>();
 
 }
 
@@ -26,7 +30,7 @@ public Scheduler(int quantum) {
 
 timeSlice = quantum;
 
-queue = new CircularList();
+queue = new LinkedList<>();
 
 }
 
@@ -38,7 +42,7 @@ queue = new CircularList();
 
 public void addThread(Thread t) {
 
-queue.addItem(t);
+queue.offer(t);
 
 }
 
@@ -70,7 +74,7 @@ while (true) {
 
 try {
 
-current = (Thread)queue.getNext();
+current = (Thread)queue.poll();
 
 if ( (current != null) && (current.isAlive()) ) {
 

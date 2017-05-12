@@ -1,3 +1,6 @@
+import static java.lang.Thread.sleep;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -11,13 +14,11 @@ class WorkerThread implements Runnable {
     public void run() {
         
         System.out.println(Thread.currentThread().getName()+" (Start) message = "+message);
-        processmessage();
+        System.out.println(Thread.currentThread().getName()+ " running");
         System.out.println(Thread.currentThread().getName()+" (End)");
     }
  
-    private void processmessage() {
-        try {  Thread.sleep(2000);  } catch (InterruptedException e) { 
-}
+    
     }
    
 }
@@ -25,9 +26,22 @@ class WorkerThread implements Runnable {
 
 public class ThreadPool {
  
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException {
+         jdbc_con db;
+            db = new jdbc_con("com.mysql.jdbc.Driver","jdbc:mysql://localhost/cyborg","root","");
+            if(db.is_connected){
+                Connection con=db.getConnection(db);
+                Object con1=(Object)con;
+                Objectpoolnew m1=new Objectpoolnew();  
+                m1.initialize(3,con1);
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         ExecutorService executor = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 15; i++) {
+        for (int i = 1; i <= 15; i++) {
             Runnable worker = new WorkerThread("p" + i);
             executor.execute(worker);
           }

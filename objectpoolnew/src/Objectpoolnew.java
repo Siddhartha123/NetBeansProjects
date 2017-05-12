@@ -1,10 +1,11 @@
+import static java.lang.Thread.sleep;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class Objectpoolnew implements Runnable{
+class Objectpoolnew extends Thread{
 
     static Vector<Object> ObjectPool = new Vector<Object>();
     Queue<Thread> process = new LinkedList<>();
@@ -18,13 +19,15 @@ class Objectpoolnew implements Runnable{
     }
     
     Object getPoolObject() throws InterruptedException{
-       ThreadObject th=new ThreadObject();
+       //ThreadObject th=new ThreadObject();
         if(free==0){
             //add thread to queue
-            th.start();
+            //th.start();
             if(!process.isEmpty()){
                 Thread t1=new Thread(this);
                 t1.start();
+                synchronized(this.ObjectPool.elementAt(free)){
+            }
                 t1.wait();
             }
             else{
@@ -64,24 +67,6 @@ class Objectpoolnew implements Runnable{
         }
         
     }  
-  
-   /* public static void main(String args[]) throws SQLException, ClassNotFoundException, InterruptedException{ 
-
-            jdbc_con db;
-            db = new jdbc_con("com.mysql.jdbc.Driver","jdbc:mysql://localhost/cyborg","root","");
-            if(db.is_connected){
-                Connection con=db.getConnection(db);
-                Object con1=(Object)con;
-                Objectpoolnew m1=new Objectpoolnew();  
-                m1.initialize(3,con1);
-                Object con2=m1.getPoolObject();
-                Object con3=m1.getPoolObject();
-                Object con4=m1.getPoolObject();
-                Object con5=m1.getPoolObject();
-               
-                m1.releasePoolObject(con2);
-                //m1.releasePoolObject(con3);
-            }
-     }  */
+   
        
 }
