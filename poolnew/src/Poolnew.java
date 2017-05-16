@@ -4,29 +4,30 @@ import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.Stack;
-
+import java.lang.*;
 public class Poolnew {
-    int n,free,i=0;
-    ExecutorService executor;
+    int n,i=0;
+    static int free=0;
+    //ExecutorService executor;
     static Stack<Object> ObjectPool = new Stack<Object>();
     static Vector<Integer> completed=new Vector<>();
     Queue<Thread> queue;
     @SuppressWarnings("empty-statement")
-    void getPoolObject(){
+    void getPoolObject(int duration) throws InterruptedException{
         int j;
         i++;
-        queue.add(Thread.currentThread());
         //completed.add(1);
+        Thread worker = new WorkerThread("p" + i,ObjectPool,duration);
+        queue.add(worker);
         while(free==0);
-        
-        Runnable worker = new WorkerThread("p" + i,ObjectPool);
-        //free--;
+        queue.poll().start();
+        free--;
         /*
         for(j=0;j<i-1;j++){
             while(completed.elementAt(j)==0);
         }
         */
-        executor.execute(worker);
+        //executor.execute(worker);
         //System.out.println(executor);
     }
     
@@ -35,39 +36,51 @@ public class Poolnew {
         free=n;
         int j;
         //completed.add(1);
-        executor= Executors.newFixedThreadPool(num);
+        //executor= Executors.newFixedThreadPool(num);
         for(j=0;j<n;j++)
-        ObjectPool.add(obj);
+            ObjectPool.add(obj);
         queue =new LinkedList<>();
     }
     
 }
 
-class WorkerThread implements Runnable{
+class WorkerThread extends Thread{
     private String message;
     Object object;
     public boolean isComplete=false;
-    public WorkerThread(String s,Stack obj){
+    int duration;   
+    @SuppressWarnings("empty-statement")
+    public WorkerThread(String s,Stack obj,int duration){
+        this.duration=duration;
         while(obj.empty());
         this.object=obj.pop();
+        //System.out.println("objects free: "+Poolnew.ObjectPool.size());
         this.message=s;
     }
  
     @Override
     public void run() {
+        long current_time=System.currentTimeMillis();  
+        //System.out.println(current_time);
         System.out.println(Thread.currentThread().getName()+" (Start)"+message);
+        istime(current_time);
         System.out.println(Thread.currentThread().getName()+" (End)");
         this.isComplete=true;
         this.release(object);
         //p.free++;
     }
-    public void release(Object object)
-    {
+    public void istime(long start_time){
+        while((System.currentTimeMillis()-start_time)<duration);
+        //System.out.println(System.currentTimeMillis());
+    }
+    public void release(Object object){
         Poolnew.ObjectPool.push(object);
+        //System.out.println("objects free: "+Poolnew.ObjectPool.size());
+        Poolnew.free++;
     }
  
     
-    }
+}
    
 
 
