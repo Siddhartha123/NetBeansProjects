@@ -5,6 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.Stack;
 import java.lang.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 public class Poolnew {
     int n,i=0;
     static int free=0;
@@ -31,14 +33,23 @@ public class Poolnew {
         //System.out.println(executor);
     }
     
-    Poolnew(int num,Object obj){
+    Poolnew(int num,String driver,String url,String user,String pass) throws SQLException, ClassNotFoundException{
         n=num;
         free=n;
         int j;
         //completed.add(1);
         //executor= Executors.newFixedThreadPool(num);
         for(j=0;j<n;j++)
-            ObjectPool.add(obj);
+        {
+            jdbc_con db;
+            db = new jdbc_con(driver,url,user,pass);
+            if(db.is_connected){
+                Connection con=db.getConnection(db);
+                Object con1=(Object)con;
+                ObjectPool.add(con1);
+            }
+        }
+            
         queue =new LinkedList<>();
     }
     

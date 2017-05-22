@@ -3,3 +3,10 @@
 /poolnew/nbproject/private/
 /poolnew/build/
 *.class
+/poolnew/dist/
+/MyCallable/nbproject/private/
+/MyCallable/build/
+/PoolCallable/nbproject/private/
+/PoolCallable/build/
+/CanteenService/nbproject/private/
+/CanteenService/build/

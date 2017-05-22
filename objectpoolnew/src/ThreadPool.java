@@ -21,13 +21,13 @@ class WorkerThread implements Runnable {
     
     }
    
-}
+
 
 
 public class ThreadPool {
  
     public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException {
-         jdbc_con db;
+            jdbc_con db;
             db = new jdbc_con("com.mysql.jdbc.Driver","jdbc:mysql://localhost/cyborg","root","");
             if(db.is_connected){
                 Connection con=db.getConnection(db);
