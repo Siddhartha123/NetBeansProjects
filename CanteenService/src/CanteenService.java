@@ -1,7 +1,4 @@
-
 import java.util.concurrent.CompletionService;
-
-
 
 public class CanteenService {
 
@@ -12,14 +9,16 @@ public class CanteenService {
 		 */
 		
 		//Create a few Canteen Staffs as producers.
-		CanteenStaffProducer prod1 = new CanteenStaffProducer("staff1");
-		CanteenStaffProducer prod2 = new CanteenStaffProducer("staff2");
-		
+		CanteenStaffProducer prod1 = new CanteenStaffProducer();
+		CanteenStaffProducer prod2 = new CanteenStaffProducer();
+		CanteenStaffProducer prod3 = new CanteenStaffProducer();
 		//submit tasks of food plate creation to the CompletionService
-		CompletionService compService = CompletionServiceProvider.getCompletionservice();
+                CompletionServiceProvider c=new CompletionServiceProvider();
+		CompletionService compService = c.getCompletionservice();
 		
 		compService.submit(prod1);
 		compService.submit(prod2);
+                compService.submit(prod3);
 	
 //		Scenario2: Students (Consumers) at the canteen counter
 //		but no food plates yet available.
@@ -29,9 +28,10 @@ public class CanteenService {
 //		If you need an unblocking retrieval of completed tasks 
 //              (retrieval of food plates), use poll method.
 		
-		new Thread(new StudentConsumer("student1",compService)).start();
-		new Thread(new StudentConsumer("student2",compService)).start();
-		new Thread(new StudentConsumer("student3",compService)).start();
+		new Thread(new StudentConsumer("Thread1",compService)).start();
+		new Thread(new StudentConsumer("Thread2",compService)).start();
+		new Thread(new StudentConsumer("Thread3",compService)).start();
+                new Thread(new StudentConsumer("Thread4",compService)).start();
 		/*
 		 * Scenario3: To simulate random Produers and Consumers 
 		 * (Canteen Staff and Students) please un-comment the 

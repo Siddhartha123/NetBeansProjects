@@ -30,11 +30,16 @@ public class StudentConsumer implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("Student waiting for foodplate: "+ this.studName + " at "+ new Date());
+		System.out.println(this.studName +" waiting "+ " at "+ new Date());
 		try {
-			Future<FoodPlate> fp = service.take();
+                     
+                        CompletionServiceProvider.completionService.submit(new CanteenStaffProducer());
+		        //CompletionServiceProvider.
+                    
+                        Future<FoodPlate> fp = service.take();
                         FoodPlate f=fp.get();
-			System.out.println("student got food plate created by: "+f.getFoodPlateCreatedBy());
+                        Thread.sleep(1000);
+			System.out.println(this.studName+" got Object created by: "+f.getFoodPlateCreatedBy());
                         CompletionServiceProvider.Opool.push(f);
 		} catch (InterruptedException | ExecutionException e) {
 			// TODO Auto-generated catch block

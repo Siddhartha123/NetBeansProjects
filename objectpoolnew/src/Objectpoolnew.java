@@ -6,15 +6,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class Objectpoolnew extends Thread{
-
-    static Vector<Object> ObjectPool = new Vector<Object>();
+    public jdbc_con db;
+    static Stack<Object> ObjectPool = new Stack<Object>();
     Queue<Thread> process = new LinkedList<>();
     int n,free;
-    void initialize(int num,Object obj){
+    void initialize(int num,Object obj) throws SQLException, ClassNotFoundException{
         free=n=num;
         int i;
         for(i=n;i>0;i--){
-          ObjectPool.add(obj);
+          db = new jdbc_con("com.mysql.jdbc.Driver","jdbc:mysql://localhost/cyborg","root","");
+          Connection con=db.getConnection(db);
+          Object ob=(Object)con;
+          ObjectPool.push(ob);
         }
     }
     
